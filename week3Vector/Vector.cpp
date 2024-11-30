@@ -91,3 +91,82 @@ void Vector::reserve(const int n)
 	Vector::deepCopy(oldElements, this->_size, this->_elements);
 	delete[] oldElements;
 }
+
+void Vector::resize(const int n)
+{
+	int* oldElements = nullptr;
+	int mulFactor = this->_resizeFactor;
+	int i;
+
+	if (n > this->_capacity)
+	{
+		//scale capacity and size
+		while (mulFactor < n)
+		{
+			mulFactor += this->_resizeFactor;
+		}
+		this->_capacity = mulFactor;
+		oldElements = this->_elements;
+		this->_elements = new int[this->_capacity + this->_resizeFactor];
+		Vector::deepCopy(oldElements, this->_size, this->_elements);
+		delete[] oldElements;
+
+		//init values
+		for (i = this->_size; i < this->_capacity-1; i++)
+		{
+			this->_elements[i] = 0;
+		}
+
+		//update size
+		this->_size = this->_capacity;
+	}
+	if (n < this->_capacity)
+	{
+		oldElements = this->_elements;
+		this->_elements = new int[n];
+		Vector::deepCopy(oldElements, n, this->_elements);
+		delete[] oldElements;
+	}
+}
+
+void Vector::assign(const int val)
+{
+
+}
+
+void Vector::resize(const int n, const int& val)
+{
+	int* oldElements = nullptr;
+	int mulFactor = this->_resizeFactor;
+	int i;
+
+	if (n > this->_capacity)
+	{
+		//scale capacity and size
+		while (mulFactor < n)
+		{
+			mulFactor += this->_resizeFactor;
+		}
+		this->_capacity = mulFactor;
+		oldElements = this->_elements;
+		this->_elements = new int[this->_capacity + this->_resizeFactor];
+		Vector::deepCopy(oldElements, this->_size, this->_elements);
+		delete[] oldElements;
+
+		//init values
+		for (i = this->_size; i < this->_capacity - 1; i++)
+		{
+			this->_elements[i] = val; //only difference omg
+		}
+
+		//update size
+		this->_size = this->_capacity;
+	}
+	if (n < this->_capacity)
+	{
+		oldElements = this->_elements;
+		this->_elements = new int[n];
+		Vector::deepCopy(oldElements, n, this->_elements);
+		delete[] oldElements;
+	}
+}
