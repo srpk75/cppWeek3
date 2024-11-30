@@ -3,6 +3,7 @@ class Vector
 public:
 	Vector(const int n); //const
 	~Vector();	   //deconst
+	void deepCopy(const int* src, int size, int* dst);
 
 	int size() const;
 	int capacity() const;

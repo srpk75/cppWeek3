@@ -13,6 +13,15 @@ Vector::~Vector()
 	delete[] this->_elements;
 }
 
+void Vector::deepCopy(const int* src, const int size, int* dst)
+{
+	int i;
+	for (i = 0; i < size; i++)
+	{
+		dst[i] = src[i];
+	}
+}
+
 int Vector::capacity() const
 {
 	return this->_capacity;
@@ -44,6 +53,7 @@ void Vector::push_back(const int& val)
 	{
 		oldElements = this->_elements;
 		this->_elements = new int[this->_capacity + this->_resizeFactor];
+		Vector::deepCopy(oldElements, this->_size, this->_elements);
 		delete[] oldElements;
 	}
 	this->_elements[this->_size] = val;
@@ -56,7 +66,16 @@ int Vector::pop_back()
 	return this->_elements[this->_size];
 }
 
-void reserve(const int n)
+void Vector::reserve(const int n)
 {
-
+	int* oldElements = nullptr;
+	int mulFactor = this->_resizeFactor;
+	while (mulFactor < n)
+	{
+		mulFactor += this->_resizeFactor;
+	}
+	oldElements = this->_elements;
+	this->_elements = new int[this->_capacity + this->_resizeFactor];
+	Vector::deepCopy(oldElements, this->_size, this->_elements);
+	delete[] oldElements;
 }
