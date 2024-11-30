@@ -1,7 +1,7 @@
 class Vector
 {
 public:
-	Vector(int n); //const
+	Vector(const int n); //const
 	~Vector();	   //deconst
 
 	int size() const;
@@ -13,4 +13,5 @@ private:
 	int* _elements;
 	int _capacity;
 	int _resizeFactor;
+	int _size;
 };
