@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include <iostream>
 
 Vector::Vector(const int n)
 {
@@ -53,6 +54,7 @@ void Vector::push_back(const int& val)
 	{
 		oldElements = this->_elements;
 		this->_elements = new int[this->_capacity + this->_resizeFactor];
+		this->_capacity += this->_resizeFactor;
 		Vector::deepCopy(oldElements, this->_size, this->_elements);
 		delete[] oldElements;
 	}
@@ -62,18 +64,28 @@ void Vector::push_back(const int& val)
 
 int Vector::pop_back()
 {
+	if (this->empty())
+	{
+		std::cout << "error: pop from empty vector" << std::endl;
+		return -9999;
+	}
 	this->_size--;
 	return this->_elements[this->_size];
 }
 
 void Vector::reserve(const int n)
 {
+	if (n < this->_capacity)
+	{
+		return;
+	}
 	int* oldElements = nullptr;
 	int mulFactor = this->_resizeFactor;
 	while (mulFactor < n)
 	{
 		mulFactor += this->_resizeFactor;
 	}
+	this->_capacity = mulFactor;
 	oldElements = this->_elements;
 	this->_elements = new int[this->_capacity + this->_resizeFactor];
 	Vector::deepCopy(oldElements, this->_size, this->_elements);
