@@ -8,6 +8,9 @@ public:
 	int capacity() const;
 	int resizeFactor() const;
 	bool empty() const;
+	void push_back(const int& val);
+	int pop_back();
+	void reserve(const int n);
 
 private:
 	int* _elements;
