@@ -118,7 +118,7 @@ void Vector::resize(const int n)
 		}
 
 		//update size
-		this->_size = this->_capacity;
+		this->_size = n;
 	}
 	if (n < this->_capacity)
 	{
@@ -164,7 +164,7 @@ void Vector::resize(const int n, const int& val)
 		}
 
 		//update size
-		this->_size = this->_capacity;
+		this->_size = n;
 	}
 	if (n < this->_capacity)
 	{
