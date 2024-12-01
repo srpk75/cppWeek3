@@ -1,295 +1,268 @@
 #include "Vector.h"
-#include <windows.h> // WinApi header - needed for setting console color
 #include <iostream>
-#include <string>
 
 using std::cout;
 using std::endl;
 
-#define GREEN 2
-#define DARK_RED 4
-#define PURPLE 5
-#define YELLOW 6
-#define LIGHT_BLUE 9
-#define LIGHT_GREEN 10
-#define TEAL 11
-#define RED 12
-#define PURPLE 13
-#define LIGHT_YELLOW 14
-#define WHITE 15
+#define TEST_FAILED "Test Failed :(\n"
+#define TESTS_PASSED "Tests Passed :)\n"
 
-void set_console_color(unsigned int color)
+bool vectorsEqual(Vector v1, Vector v2)	// vectors passed as copy
 {
-	// colors are 0=black 1=blue 2=green and so on to 15=white
-	// colorattribute = foreground + background * 16
-	// to get red text on yellow use 4 + 14*16 = 228
-	// light red on yellow would be 12 + 14*16 = 236
-	// a Dev-C++ tested console application by vegaseat 07nov2004
-
-	HANDLE hConsole;
-
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, color);
-}
-
-
-std::string getVectorString(const Vector v)
-{
-	return
-		"[capacity: " + std::to_string(v.capacity()) +
-		", size: " + std::to_string(v.size()) +
-		", resize factor: " + std::to_string(v.resizeFactor()) + "]";
-}
-
-void addElementsToVector(Vector& v, const int elements[], const int numberOfElements)
-{
-	int element;
-	for (unsigned int i = 0; i < numberOfElements; i++)
+	// compares attributes
+	if (v1.capacity() != v2.capacity() ||
+		v1.size() != v2.size() ||
+		v1.resizeFactor() != v2.resizeFactor())
 	{
-		v.push_back(elements[i]);
-	}
-}
-
-std::string getVectorElementsString(Vector& v)
-{
-	std::string result = "";
-	for (unsigned int i = 0; i < v.size(); i++)
-	{
-		result += std::to_string(v[i]) + ",";
-	}
-	if (v.size() > 0)
-		result = result.substr(0, result.length() - 1);
-	return result;
-}
-
-
-bool test4()
-{
-	bool result = false;
-
-	try
-	{
-		// Tests Ex3 part 4 - operator[] , assign, resize
-
-		set_console_color(YELLOW);
-		cout <<
-			"************************************\n" <<
-			"Test 4 - resize, assign, operator[] \n" <<
-			"************************************\n" << endl;
-		set_console_color(WHITE);
-
-		cout <<
-			"Initializing Vector v1 with n=5 ... \n" << endl;
-
-		Vector v1(5);
-
-		cout <<
-			"Adding 10 elements to vector v1 (1,2, ... ,10) ... \n" << endl;
-
-		const int v1elements[] = { 1,2,3,4,5,6,7,8,9,10 };
-		addElementsToVector(v1, v1elements, 10);
-
-		cout <<
-			"Initializing Vector v2 with n=7 ... \n" << endl;
-
-		Vector v2(7);
-
-		cout <<
-			"Adding 10 elements to vector v2 (11,22, ... ,99,110) ... \n" << endl;
-
-		const int v2elements[] = { 11,22,33,44,55,66,77,88,99,110 };
-		addElementsToVector(v2, v2elements, 10);
-
-		std::string expected = "v1: 1,2,3,4,5,6,7,8,9,10\n";
-		expected += "v2: 11,22,33,44,55,66,77,88,99,110";
-		std::string got = "v1: " + getVectorElementsString(v1) + "\nv2: " + getVectorElementsString(v2);
-		cout << "Expected:\n" << expected << endl;
-		cout << "Got     :\n" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check function push_back(), access operator[]\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\nAccessing element v1[5] ... \n" << endl;
-
-		expected = "6";
-		got = std::to_string(v1[5]);
-		cout << "Expected:" << expected << endl;
-		cout << "Got     :" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check access operator []\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\nAccessing element v2[9] ... \n" << endl;
-
-		expected = "110";
-		got = std::to_string(v2[9]);
-		cout << "Expected:" << expected << endl;
-		cout << "Got     :" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check access operator []\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\nAccessing element v2[10] ... \n" << endl;
-
-		expected = "11";
-		got = std::to_string(v2[10]);
-		cout << "Expected:" << expected << endl;
-		cout << "Got     :" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check access operator []\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\nAccessing element v1[-1] ... \n" << endl;
-
-		expected = "11";
-		got = std::to_string(v2[-1]);
-		cout << "Expected:" << expected << endl;
-		cout << "Got     :" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check access operator []\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\nInitializing Vector v3, using copy constructor with v1  \n" << endl;
-
-		Vector v3(v1);
-
-		expected = "v1: 1,2,3,4,5,6,7,8,9,10\n";
-		expected += "v3: 1,2,3,4,5,6,7,8,9,10";
-		got = "v1: " + getVectorElementsString(v1) + "\nv3: " + getVectorElementsString(v3);
-		cout << "Expected:\n" << expected << endl;
-		cout << "Got     :\n" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check copy constructor - Vector(const Vector&)\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\ncopying v2 to v3, using operator= (v3 = v2) ... \n" << endl;
-		v3 = v2;
-
-		expected = "v2: 11,22,33,44,55,66,77,88,99,110\n";
-		expected += "v3: 11,22,33,44,55,66,77,88,99,110";
-		got = "v2: " + getVectorElementsString(v2) + "\nv3: " + getVectorElementsString(v3);
-		cout << "Expected:\n" << expected << endl;
-		cout << "Got     :\n" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check operator=\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\ncalling v1.assign(999)... \n" << endl;
-		v1.assign(999);
-		expected = "v1: 999,999,999,999,999,999,999,999,999,999";
-		got = "v1: " + getVectorElementsString(v1);
-		cout << "Expected:\n" << expected << endl;
-		cout << "Got     :\n" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check function assign()\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-		cout <<
-			"\ncalling v2.resize(15, 1234)... \n" << endl;
-		v2.resize(15, 1234);
-		expected = "v2: 11,22,33,44,55,66,77,88,99,110,1234,1234,1234,1234,1234";
-		got = "v2: " + getVectorElementsString(v2);
-		cout << "Expected:\n" << expected << endl;
-		cout << "Got     :\n" << got << endl;
-		if (got != expected)
-		{
-			set_console_color(RED);
-			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check function resize(int n,int &val)\n";
-			set_console_color(WHITE);
-			return false;
-		}
-
-	}
-	catch (...)
-	{
-		set_console_color(RED);
-		std::cerr << "Test crashed" << endl;
-		std::cout << "FAILED: The program crashed, check the following things:\n" <<
-			"1. Did you delete a pointer twice?\n2. Did you access index out of bounds?\n" <<
-			"3. Did you remember to initialize array before accessing it?";
-		set_console_color(WHITE);
 		return false;
 	}
 
-	set_console_color(LIGHT_GREEN);
-	std::cout << "\n########## operator[], resize(), assign() - TEST Passed!!! ##########\n\n";
-	set_console_color(WHITE);
+	// compares values
+	for (int i = 0; i < v1.size(); i++)
+	{
+		if (v1.pop_back() != v2.pop_back())
+		{
+			return false;
+		}
+	}
 
 	return true;
-
 }
+
+/**
+ * checks first and second part of the exercise:
+ * basic constructor, size(), capacity(), push_back(),
+ * pop_back(), reserve(), resize(), assign()
+**/
+void test1()
+{
+	// initial capacity is 4
+	Vector v(4);
+
+	// push values {1,2,3,4,5}
+	for (int i = 0; i < 5; i++)
+	{
+		v.push_back(i + 1);
+	}
+
+	// pops 2 elements
+	for (int i = 0; i < 2; i++)
+	{
+		v.pop_back();
+	}
+
+	// checks capacity and size
+	if (v.capacity() != 8 || v.size() != 3)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// checks values
+	for (int i = 0; i < v.size(); i++) {
+		if (v.pop_back() != 3 - i) {
+			cout << TEST_FAILED;
+			return;
+		}
+	}
+
+	// checks initial capacity & size
+	Vector v2(-7);
+	if (v2.capacity() != 2 || v2.size() != 0)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// checks reserve
+	Vector v3(5);
+	v3.reserve(23);
+	if (v3.capacity() != 25)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// checks resize & assign
+	v3.resize(50);
+	v3.assign(7);
+
+	for (int i = 0; i < v3.size(); i++)
+	{
+		if (v3.pop_back() != 7)
+		{
+			cout << TEST_FAILED;
+			return;
+		}
+	}
+
+	cout << TESTS_PASSED;
+}
+
+/**
+ * checks second part of the exercise:
+ * copy ctor, copy operator
+ **/
+void test2()
+{
+	Vector v1(10);
+
+	v1.push_back(20);
+	v1.push_back(30);
+	v1.push_back(40);
+
+	// checks copy constructor
+	Vector v2 = v1;
+
+	if (vectorsEqual(v1, v2) == false)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	Vector v3(10);
+	v3.push_back(2999);
+	v3.push_back(3999);
+	v3.push_back(4999);
+
+	// checks copy operator
+	v2 = v3;
+	if (vectorsEqual(v2, v3) == false)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	v2.push_back(100);
+
+	// checks for independency - deep copy
+	if (v3.pop_back() != 4999)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	cout << TESTS_PASSED;
+}
+
+/**
+ * checks element access operator
+ **/
+void test3()
+{
+	Vector v1(10);
+
+	v1.push_back(20);
+	v1.push_back(30);
+	v1.push_back(40);
+
+	// checks valid access
+	if (v1[0] != 20 || v1[1] != 30 || v1[2] != 40)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// checks out of bounds access
+	if (v1[-3] != v1[0] || v1[v1.size() + 1] != v1[0])
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	cout << TESTS_PASSED;
+}
+
+/**
+ * checks bonus part of the exercise
+ * '+' '+=' '-' '-=' '<<'
+ **/
+/*void test4()
+{
+	Vector v1(10);
+	v1.push_back(20);
+	v1.push_back(30);
+	v1.push_back(40);
+
+	Vector v2(10);
+	v2.push_back(2);
+	v2.push_back(3);
+	v2.push_back(4);
+
+	// operator +
+	Vector v3 = v1 + v2;
+	if (v3[0] != 22 || v3[1] != 33 || v3[2] != 44)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// operator -
+	v3 = v2 - v1;
+	if (v3[0] != -18 || v3[1] != -27 || v3[2] != -36)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// operator +=
+	Vector v4(10);
+	v4.push_back(100);
+	v4.push_back(200);
+	v4.push_back(300);
+	v4 += v1;
+	if (v4[0] != 120 || v4[1] != 230 || v4[2] != 340)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	// operator -=
+	Vector v5(10);
+	v5.push_back(0);
+	v5.push_back(0);
+	v5.push_back(0);
+	v5 -= v1;
+	if (v5[0] != -20 || v5[1] != -30 || v5[2] != -40)
+	{
+		cout << TEST_FAILED;
+		return;
+	}
+
+	cout << TESTS_PASSED;
+
+	cout << "\n\n" << "Testing operator <<\n" << endl;
+
+	// operator <<
+	Vector v6(10);
+	for (int i = 0; i < 10; i++)
+	{
+		v6.push_back(i + 1);
+	}
+
+	cout << v6;
+	cout << "\nThe output should show {1,2,3,4,5,6,7,8,9,10}\n" << endl;
+
+}*/
 
 int main()
 {
-	set_console_color(LIGHT_YELLOW);
-	std::cout <<
-		"###################\n" <<
-		"Exercise 3 - Vector\n" <<
-		"Part 4 - operator[], resize(), assign() \n" <<
-		"###################\n" << std::endl;
-	set_console_color(WHITE);
+	cout << "\n*******************************" << endl;
+	cout << "******** Basic Tests **********" << endl;
+	cout << "*******************************" << endl;
+	test1();
 
-	bool testResult = test4();
+	cout << "\n******************************" << endl;
+	cout << "*********** Copy *************" << endl;
+	cout << "******************************" << endl;
+	test2();
 
-	if (testResult)
-	{
-		set_console_color(GREEN);
-		std::cout << "\n########## Ex3 Part4 Tests Passed!!! ##########" << "\n\n";
-		set_console_color(WHITE);
-	}
-	else
-	{
-		set_console_color(DARK_RED);
-		std::cout << "\n########## TEST Failed :( ##########\n";
-		set_console_color(WHITE);
-	}
-	return testResult ? 0 : 1;
+	cout << "\n******************************" << endl;
+	cout << "*********** Access ************" << endl;
+	cout << "******************************" << endl;
+	test3();
+
+
+	system("pause");
+	return 0;
 }

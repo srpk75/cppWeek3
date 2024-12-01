@@ -1,8 +1,12 @@
 #include "Vector.h"
 #include <iostream>
 
-Vector::Vector(const int n)
+Vector::Vector(int n)
 {
+	if (n < 2)
+	{
+		n = 2;
+	}
 	this->_capacity = n;
 	this->_elements = new int[n];
 	this->_resizeFactor = n;

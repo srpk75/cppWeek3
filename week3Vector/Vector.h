@@ -2,7 +2,7 @@ class Vector
 {
 public:
 
-	Vector(const int n); //const
+	Vector(int n); //const
 	~Vector();	   //deconst
 	Vector& operator=(const Vector& src);
 	int& operator[](int n) const;
