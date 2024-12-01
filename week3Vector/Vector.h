@@ -5,6 +5,8 @@ public:
 	Vector(const int n); //const
 	~Vector();	   //deconst
 	Vector& operator=(const Vector& src);
+	int& operator[](int n) const;
+
 	void deepCopy(const int* src, int size, int* dst);
 
 	//pt2

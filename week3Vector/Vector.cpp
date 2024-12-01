@@ -132,7 +132,7 @@ void Vector::resize(const int n)
 void Vector::assign(const int val)
 {
 	int i;
-	for (i = 0; i < this->_size-1; i++)
+	for (i = 0; i < this->_size; i++)
 	{
 		this->_elements[i] = val;
 	}
@@ -187,4 +187,14 @@ Vector& Vector::operator=(const Vector& src)
 		this->_elements[i] = src._elements[i];
 	}
 	return *this;
+}
+
+int& Vector::operator[](int n) const
+{
+	if (n > this->_size - 1 || n < 0)
+	{
+		std::cerr << "what are you doing?? this is NOT your memory" << std::endl;
+		return this->_elements[0];
+	}
+	return this->_elements[n];
 }

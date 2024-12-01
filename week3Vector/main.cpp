@@ -1,6 +1,5 @@
 #include "Vector.h"
 #include <windows.h> // WinApi header - needed for setting console color
-#include <random>
 #include <iostream>
 #include <string>
 
@@ -19,7 +18,6 @@ using std::endl;
 #define LIGHT_YELLOW 14
 #define WHITE 15
 
-
 void set_console_color(unsigned int color)
 {
 	// colors are 0=black 1=blue 2=green and so on to 15=white
@@ -35,33 +33,12 @@ void set_console_color(unsigned int color)
 }
 
 
-// gets a random number between a range of numbers
-int getRandomInt(int min, int max)
-{
-	std::random_device rd;     // only used once to initialise (seed) engine
-	std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
-	std::uniform_int_distribution<int> uni(min, max); // guaranteed unbiased
-
-	auto random_integer = uni(rng);
-	return random_integer;
-}
-
-std::string getVectorString(const Vector& v)
+std::string getVectorString(const Vector v)
 {
 	return
 		"[capacity: " + std::to_string(v.capacity()) +
 		", size: " + std::to_string(v.size()) +
 		", resize factor: " + std::to_string(v.resizeFactor()) + "]";
-}
-
-void addRandomElementsToVector(Vector& v, const int numberOfElements)
-{
-	int element;
-	for (unsigned int i = 0; i < numberOfElements; i++)
-	{
-		element = getRandomInt(0, 100000);
-		v.push_back(element);
-	}
 }
 
 void addElementsToVector(Vector& v, const int elements[], const int numberOfElements)
@@ -73,19 +50,32 @@ void addElementsToVector(Vector& v, const int elements[], const int numberOfElem
 	}
 }
 
-bool test3Big3()
+std::string getVectorElementsString(Vector& v)
+{
+	std::string result = "";
+	for (unsigned int i = 0; i < v.size(); i++)
+	{
+		result += std::to_string(v[i]) + ",";
+	}
+	if (v.size() > 0)
+		result = result.substr(0, result.length() - 1);
+	return result;
+}
+
+
+bool test4()
 {
 	bool result = false;
 
 	try
 	{
-		// Tests Ex3 part 3 - Big 3
+		// Tests Ex3 part 4 - operator[] , assign, resize
 
-		set_console_color(LIGHT_BLUE);
+		set_console_color(YELLOW);
 		cout <<
-			"******************************\n" <<
-			"Test 3 - Copy CTOR, operator= \n" <<
-			"******************************\n" << endl;
+			"************************************\n" <<
+			"Test 4 - resize, assign, operator[] \n" <<
+			"************************************\n" << endl;
 		set_console_color(WHITE);
 
 		cout <<
@@ -110,30 +100,92 @@ bool test3Big3()
 		const int v2elements[] = { 11,22,33,44,55,66,77,88,99,110 };
 		addElementsToVector(v2, v2elements, 10);
 
-
-
-		std::string expected = "v1: [capacity: 10, size: 10, resize factor: 5]\n";
-		expected += "v2: [capacity: 14, size: 10, resize factor: 7]";
-		std::string got = "v1: " + getVectorString(v1) + "\nv2: " + getVectorString(v2);
+		std::string expected = "v1: 1,2,3,4,5,6,7,8,9,10\n";
+		expected += "v2: 11,22,33,44,55,66,77,88,99,110";
+		std::string got = "v1: " + getVectorElementsString(v1) + "\nv2: " + getVectorElementsString(v2);
 		cout << "Expected:\n" << expected << endl;
 		cout << "Got     :\n" << got << endl;
 		if (got != expected)
 		{
 			set_console_color(RED);
 			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check function push_back()\n";
+				"check function push_back(), access operator[]\n";
 			set_console_color(WHITE);
 			return false;
 		}
 
 		cout <<
-			"Initializing Vector v3, using copy constructor with v1 ... \n" << endl;
+			"\nAccessing element v1[5] ... \n" << endl;
+
+		expected = "6";
+		got = std::to_string(v1[5]);
+		cout << "Expected:" << expected << endl;
+		cout << "Got     :" << got << endl;
+		if (got != expected)
+		{
+			set_console_color(RED);
+			std::cout << "FAILED: Vector information is not as expected\n" <<
+				"check access operator []\n";
+			set_console_color(WHITE);
+			return false;
+		}
+
+		cout <<
+			"\nAccessing element v2[9] ... \n" << endl;
+
+		expected = "110";
+		got = std::to_string(v2[9]);
+		cout << "Expected:" << expected << endl;
+		cout << "Got     :" << got << endl;
+		if (got != expected)
+		{
+			set_console_color(RED);
+			std::cout << "FAILED: Vector information is not as expected\n" <<
+				"check access operator []\n";
+			set_console_color(WHITE);
+			return false;
+		}
+
+		cout <<
+			"\nAccessing element v2[10] ... \n" << endl;
+
+		expected = "11";
+		got = std::to_string(v2[10]);
+		cout << "Expected:" << expected << endl;
+		cout << "Got     :" << got << endl;
+		if (got != expected)
+		{
+			set_console_color(RED);
+			std::cout << "FAILED: Vector information is not as expected\n" <<
+				"check access operator []\n";
+			set_console_color(WHITE);
+			return false;
+		}
+
+		cout <<
+			"\nAccessing element v1[-1] ... \n" << endl;
+
+		expected = "11";
+		got = std::to_string(v2[-1]);
+		cout << "Expected:" << expected << endl;
+		cout << "Got     :" << got << endl;
+		if (got != expected)
+		{
+			set_console_color(RED);
+			std::cout << "FAILED: Vector information is not as expected\n" <<
+				"check access operator []\n";
+			set_console_color(WHITE);
+			return false;
+		}
+
+		cout <<
+			"\nInitializing Vector v3, using copy constructor with v1  \n" << endl;
 
 		Vector v3(v1);
 
-		expected = "v1: [capacity: 10, size: 10, resize factor: 5]\n";
-		expected += "v3: [capacity: 10, size: 10, resize factor: 5]";
-		got = "v1: " + getVectorString(v1) + "\nv3: " + getVectorString(v3);
+		expected = "v1: 1,2,3,4,5,6,7,8,9,10\n";
+		expected += "v3: 1,2,3,4,5,6,7,8,9,10";
+		got = "v1: " + getVectorElementsString(v1) + "\nv3: " + getVectorElementsString(v3);
 		cout << "Expected:\n" << expected << endl;
 		cout << "Got     :\n" << got << endl;
 		if (got != expected)
@@ -146,58 +198,55 @@ bool test3Big3()
 		}
 
 		cout <<
-			"\nadding 3 elements to v3 ... \n" << endl;
-		addRandomElementsToVector(v3, 3);
+			"\ncopying v2 to v3, using operator= (v3 = v2) ... \n" << endl;
+		v3 = v2;
 
-		expected = "v1: [capacity: 10, size: 10, resize factor: 5]\n";
-		expected += "v3: [capacity: 15, size: 13, resize factor: 5]";
-		got = "v1: " + getVectorString(v1) + "\nv3: " + getVectorString(v3);
+		expected = "v2: 11,22,33,44,55,66,77,88,99,110\n";
+		expected += "v3: 11,22,33,44,55,66,77,88,99,110";
+		got = "v2: " + getVectorElementsString(v2) + "\nv3: " + getVectorElementsString(v3);
 		cout << "Expected:\n" << expected << endl;
 		cout << "Got     :\n" << got << endl;
 		if (got != expected)
 		{
 			set_console_color(RED);
 			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"Are you are doing deep or shallow copy?\n";
+				"check operator=\n";
 			set_console_color(WHITE);
 			return false;
 		}
 
 		cout <<
-			"\ncopying v2 to v1, using operator= (v1 = v2) ... \n" << endl;
-		v1 = v2;
-
-		expected = "v1: [capacity: 14, size: 10, resize factor: 7]\n";
-		expected += "v2: [capacity: 14, size: 10, resize factor: 7]";
-		got = "v1: " + getVectorString(v1) + "\nv2: " + getVectorString(v2);
+			"\ncalling v1.assign(999)... \n" << endl;
+		v1.assign(999);
+		expected = "v1: 999,999,999,999,999,999,999,999,999,999";
+		got = "v1: " + getVectorElementsString(v1);
 		cout << "Expected:\n" << expected << endl;
 		cout << "Got     :\n" << got << endl;
 		if (got != expected)
 		{
 			set_console_color(RED);
 			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"check operator= \n";
+				"check function assign()\n";
 			set_console_color(WHITE);
 			return false;
 		}
 
 		cout <<
-			"\nadding 9 elements to v2 ... \n" << endl;
-		addRandomElementsToVector(v2, 9);
-
-		expected = "v1: [capacity: 14, size: 10, resize factor: 7]\n";
-		expected += "v2: [capacity: 21, size: 19, resize factor: 7]";
-		got = "v1: " + getVectorString(v1) + "\nv2: " + getVectorString(v2);
+			"\ncalling v2.resize(15, 1234)... \n" << endl;
+		v2.resize(15, 1234);
+		expected = "v2: 11,22,33,44,55,66,77,88,99,110,1234,1234,1234,1234,1234";
+		got = "v2: " + getVectorElementsString(v2);
 		cout << "Expected:\n" << expected << endl;
 		cout << "Got     :\n" << got << endl;
 		if (got != expected)
 		{
 			set_console_color(RED);
 			std::cout << "FAILED: Vector information is not as expected\n" <<
-				"Are you are doing deep or shallow copy?\n";
+				"check function resize(int n,int &val)\n";
 			set_console_color(WHITE);
 			return false;
 		}
+
 	}
 	catch (...)
 	{
@@ -211,7 +260,7 @@ bool test3Big3()
 	}
 
 	set_console_color(LIGHT_GREEN);
-	std::cout << "\n########## Big 3 - TEST Passed!!! ##########\n\n";
+	std::cout << "\n########## operator[], resize(), assign() - TEST Passed!!! ##########\n\n";
 	set_console_color(WHITE);
 
 	return true;
@@ -224,16 +273,16 @@ int main()
 	std::cout <<
 		"###################\n" <<
 		"Exercise 3 - Vector\n" <<
-		"Part 3 - Big 3 \n" <<
+		"Part 4 - operator[], resize(), assign() \n" <<
 		"###################\n" << std::endl;
 	set_console_color(WHITE);
 
-	bool testResult = test3Big3();
+	bool testResult = test4();
 
 	if (testResult)
 	{
 		set_console_color(GREEN);
-		std::cout << "\n########## Ex3 Part3 Tests Passed!!! ##########" << "\n\n";
+		std::cout << "\n########## Ex3 Part4 Tests Passed!!! ##########" << "\n\n";
 		set_console_color(WHITE);
 	}
 	else
