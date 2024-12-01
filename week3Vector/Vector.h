@@ -1,8 +1,10 @@
 class Vector
 {
 public:
+
 	Vector(const int n); //const
 	~Vector();	   //deconst
+	Vector& operator=(const Vector& src);
 	void deepCopy(const int* src, int size, int* dst);
 
 	//pt2
